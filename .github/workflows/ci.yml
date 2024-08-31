@@ -2,6 +2,11 @@ name: CI
 
 on:
   workflow_call:
+    inputs:
+      ci_envs:
+        description: List of environment variables to be used in the CI pipeline
+        required: false
+        type: string
   workflow_dispatch:
 
 jobs:
@@ -12,9 +17,13 @@ jobs:
         jvm-version: [ 11, 17, 21 ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    env:
-      MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
     steps:
+      - name: Setup environment variables
+        if: ${{ inputs.ci_envs }}
+        run: |
+          for i in "${{ inputs.ci_envs }}"; do
+            echo $i
+          done
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - name: Set up JDK ${{ matrix.jvm-version }}

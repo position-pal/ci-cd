@@ -6,6 +6,11 @@ name: CI/CD
 
 on:
   workflow_call:
+    inputs:
+      ci_envs:
+        description: List of environment variables to be used in the CI pipeline
+        required: false
+        type: string
   workflow_dispatch:
 
 jobs:
@@ -30,4 +35,6 @@ jobs:
   ci-cd:
     needs: dispatcher
     uses: ./.github/workflows/ci.yml
+    with:
+      ci_envs: ${{ inputs.ci_envs }}
     secrets: inherit
